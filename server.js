@@ -4,6 +4,7 @@ const express = require('express')
 const path = require('path')
 const { join } = require('path')
 const app = express()
+const Burger = require('./models/burger.js')
 
 app.engine('jsx', require('express-react-views').createEngine())
 app.set('views', join(__dirname, 'views'))
@@ -12,6 +13,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.get('/',(req,res) => {
+    
     res.render('home')
 })
-app.listen(process.env.PORT || 3000)
+require('./config').sync()
+  .then(() => app.listen(process.env.PORT || 3000))
+  .catch((e) => console.log(e))
