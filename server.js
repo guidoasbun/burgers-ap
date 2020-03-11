@@ -13,8 +13,21 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.get('/',(req,res) => {
-    
-    res.render('home')
+    // Burger.destroy({ Remove all items
+    //     where: {}
+    // })
+    Burger.findAll()
+    .then(burgers =>{
+        res.render('home', {burgers: JSON.parse(JSON.stringify(burgers))})
+    })
+})
+app.put('/burger',  (req, res) => {
+    Burger.update({wasEaten: req.body.wasEaten}, {where: {id: req.body.id}})
+    .then(res.sendStatus(200))
+})
+app.post('/burger', (req,res) => {
+    Burger.create(req.body)
+    .then(() => {res.sendStatus(200)})
 })
 require('./config').sync()
   .then(() => app.listen(process.env.PORT || 3000))
